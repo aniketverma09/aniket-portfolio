@@ -1,0 +1,171 @@
+portfolio/
+│
+├── frontend/
+│   │
+│   ├── index.html
+│   ├── about.html
+│   ├── services.html
+│   ├── portfolio.html
+│   ├── contact.html
+│   │
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── responsive.css
+│   │   └── chatbox.css
+│   │
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── contact.js
+│   │   └── chat.js
+│   │
+│   ├── images/
+│   │   ├── profile.jpg
+│   │   ├── projects/
+│   │   │   ├── pixels.png
+│   │   │   └── verma-restaurant.png
+│   │   └── icons/
+│   │
+│   └── assets/
+│       └── fonts/
+│
+└── backend/
+    ├── server.js
+    ├── package.json
+    ├── .env
+    ├── .gitignore
+    │
+    ├── config/
+    │   └── mail.js
+    │
+    ├── routes/
+    │   ├── contactRoutes.js
+    │   └── chatRoutes.js
+    │
+    ├── controllers/
+    │   ├── contactController.js
+    │   └── chatController.js
+    │
+    ├── utils/
+    │   └── emailTemplate.js
+    │
+    └── middleware/
+        └── errorHandler.js
+
+<======================================================================>
+
+🎨 Frontend files ka kaam -
+| File             | Kaam                            |
+| ---------------- | ------------------------------- |
+| `index.html`     | Homepage                        |
+| `about.html`     | About section/page              |
+| `services.html`  | Services                        |
+| `portfolio.html` | Projects                        |
+| `contact.html`   | Contact form                    |
+| `style.css`      | Main website design             |
+| `responsive.css` | Mobile/tablet responsive design |
+| `chatbox.css`    | AI chatbox design               |
+| `main.js`        | Navbar, animations, general JS  |
+| `contact.js`     | Contact form → backend          |
+| `chat.js`        | AI Chatbox → Gemini backend     |
+| `images/`        | Website images                  |
+| `projects/`      | Project screenshots             |
+
+<======================================================================>
+
+🤖 AI Chat ka connection -
+frontend/js/chat.js
+       ↓
+POST /api/chat
+       ↓
+backend/routes/chatRoutes.js
+       ↓
+chatController.js
+       ↓
+Gemini API
+       ↓
+chat.js
+       ↓
+💬 AI response
+
+<======================================================================>
+
+📩 Contact Form -
+frontend/js/contact.js
+       ↓
+POST /api/contact
+       ↓
+contactRoutes.js
+       ↓
+contactController.js
+       ↓
+Nodemailer/Gmail
+       ↓
+📧 Email
+<======================================================================>
+
+
+BACKEND -
+📁 Kis file ka kya kaam hai? -
+    | File                               | Kaam                                                     |
+| ---------------------------------- | -------------------------------------------------------- |
+| `server.js`                        | Main backend server + routes connect karta hai           |
+| `.env`                             | Gemini key, email credentials, port                      |
+| `.gitignore`                       | `.env` aur `node_modules` ko GitHub se protect karta hai |
+| `config/mail.js`                   | Nodemailer/Gmail configuration                           |
+| `routes/contactRoutes.js`          | Contact form ka API route                                |
+| `routes/chatRoutes.js`             | AI chat ka API route                                     |
+| `controllers/contactController.js` | Contact form ka actual email logic                       |
+| `controllers/chatController.js`    | Gemini AI ko message bhejta hai                          |
+| `utils/emailTemplate.js`           | Contact email ka HTML template                           |
+| `middleware/errorHandler.js`       | Backend errors handle karta hai                          |
+
+
+
+
+<======================================================================>
+
+🔑 .env -
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-16-character-app-password
+EMAIL_TO=your-email@gmail.com
+
+GEMINI_API_KEY=your-gemini-api-key
+
+PORT=5000
+
+
+<======================================================================>
+
+🤖 AI ka flow -
+Frontend Chatbox
+       ↓
+POST /api/chat
+       ↓
+routes/chatRoutes.js
+       ↓
+controllers/chatController.js
+       ↓
+Gemini API
+       ↓
+AI Response
+       ↓
+Frontend Chatbox
+
+<======================================================================>
+
+📩 Contact form ka flow -
+Contact Form
+     ↓
+POST /api/contact
+     ↓
+contactRoutes.js
+     ↓
+contactController.js
+     ↓
+Nodemailer
+     ↓
+Gmail
+     ↓
+Your Email
+
+
