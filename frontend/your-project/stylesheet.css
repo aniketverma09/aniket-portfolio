@@ -5597,10 +5597,12 @@ body.light-mode .back-top {
 
 /* =========================================================
    TABLET
+/* =========================================================
+   RESPONSIVE PROJECT CAROUSEL - CLEAN FIX
    ========================================================= */
 
+/* TABLET */
 @media (max-width: 1050px) {
-
     .premium-carousel {
         width: calc(100% - 80px);
     }
@@ -5620,13 +5622,8 @@ body.light-mode .back-top {
     }
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
+/* MOBILE */
 @media (max-width: 650px) {
-
     .premium-section-title {
         margin-bottom: 28px;
         padding: 0 20px;
@@ -5641,411 +5638,218 @@ body.light-mode .back-top {
         line-height: 1.6;
     }
 
-
-    .premium-carousel {
-        width: calc(100% - 76px);
-    }
-
-
-    .premium-viewport {
-        padding: 12px 5px 25px;
-    }
-
-
-    .premium-track {
-        gap: 18px;
-    }
-
-
-    .premium-card {
-        flex-basis: calc(100vw - 96px);
-        width: calc(100vw - 96px);
-        min-width: calc(100vw - 96px);
-
-        height: 500px;
-
-        border-radius: 23px;
-    }
-
-
-    .premium-image {
-        height: 220px;
-    }
-
-
-    .premium-card-content {
-        padding: 0 18px 18px;
-    }
-
-
-    .premium-card-content h3 {
-        font-size: 19px;
-    }
-
-
-    .premium-card-content p {
-        font-size: 12px;
-    }
-
-
-    .premium-buttons a {
-        padding: 0 11px;
-
-        font-size: 10px;
-    }
-
-
-    .premium-arrow {
-        width: 40px;
-        height: 40px;
-
-        font-size: 12px;
-    }
-
-
-    .premium-prev {
-        left: -46px;
-    }
-
-
-    .premium-next {
-        right: -46px;
-    }
-}
-
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 390px) {
-
-    .premium-carousel {
-        width: calc(100% - 68px);
-    }
-
-    .premium-card {
-        flex-basis: calc(100vw - 88px);
-        width: calc(100vw - 88px);
-        min-width: calc(100vw - 88px);
-    }
-
-    .premium-prev {
-        left: -40px;
-    }
-
-    .premium-next {
-        right: -40px;
-    }
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .premium-track,
-    .premium-card,
-    .premium-image img,
-    .premium-arrow {
-        transition: none !important;
-    }
-}
-
-/* =========================================================
-   MOBILE PREMIUM PROJECT SLIDER - ARROW FIX
-   ========================================================= */
-
-@media (max-width: 650px) {
-
-    /* Full mobile width with safe side space */
     .premium-carousel {
         position: relative;
-
-        width: 100% !important;
-
-        padding-left: 48px;
-        padding-right: 48px;
-
+        width: calc(100% - 32px);
+        margin-left: 16px;
+        margin-right: 16px;
+        padding: 0;
         box-sizing: border-box;
-
         overflow: visible;
     }
 
-
-    /* Card viewport */
     .premium-viewport {
         width: 100%;
-
-        padding: 12px 4px 25px;
-
+        padding: 12px 0 25px;
         overflow: hidden;
-
         box-sizing: border-box;
+        contain: layout paint;
     }
 
+    .premium-track {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 16px;
+        width: max-content;
+        margin: 0;
+        padding: 0;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        transition: transform 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
 
-    /* One card on mobile */
+    /* Exactly one complete card per mobile slide */
     .premium-card {
-        flex: 0 0 100% !important;
-
-        width: 100% !important;
-        min-width: 100% !important;
-
-        box-sizing: border-box;
-
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
         height: 500px;
+        margin: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
     }
 
+    .premium-card:hover {
+        transform: translateZ(0);
+    }
 
-    /* LEFT ARROW */
+    /* Mobile image: no stretching or overflow */
+    .premium-image {
+        width: 100%;
+        height: 190px;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 16px 16px 0 0;
+        box-sizing: border-box;
+    }
+
+    .premium-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+
+    .premium-card-content {
+        padding: 0 18px 18px;
+        box-sizing: border-box;
+    }
+
+    .premium-card-content h3 {
+        font-size: 19px;
+        overflow-wrap: break-word;
+    }
+
+    .premium-card-content p {
+        font-size: 12px;
+        line-height: 1.6;
+        overflow-wrap: break-word;
+    }
+
+    .premium-buttons {
+        flex-wrap: wrap;
+    }
+
+    .premium-buttons a {
+        padding: 0 11px;
+        font-size: 10px;
+    }
+
+    .premium-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+    }
 
     .premium-prev {
-        left: 7px !important;
-        right: auto !important;
-
-        top: 50%;
-
-        width: 36px;
-        height: 36px;
-
-        transform: translateY(-50%);
+        left: -44px;
+        right: auto;
     }
-
-
-    /* RIGHT ARROW */
 
     .premium-next {
-        right: 7px !important;
-        left: auto !important;
-
-        top: 50%;
-
-        width: 36px;
-        height: 36px;
-
-        transform: translateY(-50%);
+        right: -44px;
+        left: auto;
     }
 
-
-    /* Arrow hover */
-    .premium-prev:hover,
-    .premium-next:hover {
-        transform: translateY(-50%) scale(1.05);
-    }
-
-
-    /* Smaller icon */
     .premium-arrow i {
         font-size: 11px;
     }
 }
 
-
-/* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
-
+/* SMALL PHONES */
 @media (max-width: 390px) {
-
     .premium-carousel {
-
-        padding-left: 42px;
-        padding-right: 42px;
-
+        width: calc(100% - 28px);
+        margin-left: 14px;
+        margin-right: 14px;
     }
 
-
-    .premium-prev {
-        left: 5px !important;
-
-        width: 34px;
-        height: 34px;
+    .premium-track {
+        gap: 14px;
     }
-
-
-    .premium-next {
-        right: 5px !important;
-
-        width: 34px;
-        height: 34px;
-    }
-
 
     .premium-card {
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 100%;
         height: 490px;
     }
-}   
-/* =========================================================
-   FINAL PROJECT CARD IMAGE FIX
-   Applies to all portfolio project cards
-   ========================================================= */
-
-.premium-image {
-    width: 100%;
-    height: 230px;
-    overflow: hidden;
-    border-radius: 18px 18px 0 0;
-    background: #111;
-}
-
-.premium-image img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    object-position: center;
-}
-
-/* =========================================================
-   MOBILE PROJECT CARDS
-   ========================================================= */
-
-@media screen and (max-width: 650px) {
 
     .premium-image {
-        width: 100%;
-        height: 190px !important;
-        margin: 0 !important;
-        border-radius: 16px 16px 0 0;
-        overflow: hidden;
+        height: 175px;
     }
 
-    .premium-image img {
-        width: 100%;
-        height: 100% !important;
-        display: block;
-        object-fit: cover !important;
-        object-position: center !important;
+    .premium-card-content {
+        padding: 0 16px 16px;
     }
-}
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media screen and (max-width: 390px) {
-
-    .premium-image {
-        height: 175px !important;
+    .premium-card-content h3 {
+        font-size: 18px;
     }
-}
 
-/* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
+    .premium-card-content p {
+        font-size: 12px;
+    }
 
-@media screen and (max-width: 360px) {
+    .premium-prev {
+        left: -40px;
+        width: 34px;
+        height: 34px;
+    }
 
-    .premium-image {
-        height: 165px !important;
+    .premium-next {
+        right: -40px;
+        width: 34px;
+        height: 34px;
     }
 }
 
-/* =========================================================
-   FINAL MOBILE PROJECT CAROUSEL - SMOOTH SCROLL FIX
-   Fixes inconsistent card width + third-card jump/lag
-   ========================================================= */
-
-.premium-viewport {
-    overflow: hidden;
-    contain: layout paint;
-}
-
-.premium-track {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 18px !important;
-    width: max-content !important;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
-    transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
-}
-
-.premium-card {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.premium-image,
-.premium-image img {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-@media (max-width: 650px) {
-
-    .premium-carousel {
-        width: 100% !important;
-        padding-left: 48px !important;
-        padding-right: 48px !important;
-        box-sizing: border-box !important;
-    }
-
-    .premium-viewport {
-        width: 100% !important;
-        padding: 12px 4px 25px !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-    }
-
-    .premium-track {
-        gap: 18px !important;
-        transition: transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
-    }
-
-    .premium-card {
-        flex: 0 0 100% !important;
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-        height: 500px !important;
-        box-sizing: border-box !important;
-    }
-
-    .premium-image {
-        width: 100% !important;
-        height: 190px !important;
-        margin: 0 !important;
-        border-radius: 16px 16px 0 0 !important;
-    }
-
-    .premium-image img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-    }
-}
-
-@media (max-width: 390px) {
-
-    .premium-card {
-        height: 490px !important;
-    }
-
-    .premium-image {
-        height: 175px !important;
-    }
-}
-
+/* VERY SMALL PHONES */
 @media (max-width: 360px) {
+    .premium-carousel {
+        width: calc(100% - 24px);
+        margin-left: 12px;
+        margin-right: 12px;
+    }
 
     .premium-card {
-        height: 480px !important;
+        height: 480px;
     }
 
     .premium-image {
-        height: 165px !important;
+        height: 165px;
+    }
+
+    .premium-card-content {
+        padding: 0 14px 14px;
+    }
+
+    .premium-card-content h3 {
+        font-size: 17px;
+    }
+
+    .premium-card-content p {
+        font-size: 11px;
+    }
+
+    .premium-prev {
+        left: -37px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .premium-next {
+        right: -37px;
+        width: 32px;
+        height: 32px;
     }
 }
 
+/* REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-    .premium-track {
+    .premium-track,
+    .premium-card,
+    .premium-image img,
+    .premium-arrow {
         transition: none !important;
     }
 }

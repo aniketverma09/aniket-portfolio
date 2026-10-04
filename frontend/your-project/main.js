@@ -201,32 +201,73 @@ if (skillCards.length > 0) {
 
     function init() {
 
-        const track = document.getElementById("premiumTrack");
-        const prevBtn = document.querySelector(".premium-prev");
-        const nextBtn = document.querySelector(".premium-next");
-        const dotsContainer = document.getElementById("premiumDots");
-        const counter = document.getElementById("premiumCounter");
+        const track =
+            document.getElementById("premiumTrack");
 
-        // Agar premium slider HTML nahi mila
-        if (!track || !prevBtn || !nextBtn) return;
+        const viewport =
+            document.querySelector(".premium-viewport");
 
-        const cards = Array.from(
-            track.querySelectorAll(".premium-card")
-        );
+        const prevBtn =
+            document.querySelector(".premium-prev");
 
-        if (!cards.length) return;
+        const nextBtn =
+            document.querySelector(".premium-next");
 
-        // Duplicate initialization prevent
-        if (track.dataset.sliderInitialized === "true") return;
+        const dotsContainer =
+            document.getElementById("premiumDots");
+
+        const counter =
+            document.getElementById("premiumCounter");
+
+
+        /* ----------------------------------------
+           CHECK ELEMENTS
+        ---------------------------------------- */
+
+        if (
+            !track ||
+            !viewport ||
+            !prevBtn ||
+            !nextBtn
+        ) {
+            return;
+        }
+
+
+        const cards =
+            Array.from(
+                track.querySelectorAll(".premium-card")
+            );
+
+
+        if (!cards.length) {
+            return;
+        }
+
+
+        /* ----------------------------------------
+           PREVENT DUPLICATE INITIALIZATION
+        ---------------------------------------- */
+
+        if (
+            track.dataset.sliderInitialized === "true"
+        ) {
+            return;
+        }
 
         track.dataset.sliderInitialized = "true";
 
+
         let currentIndex = 0;
 
+        let resizeTimer;
 
-        /* =========================================
+        let isAnimating = false;
+
+
+        /* ========================================
            CARDS PER VIEW
-           ========================================= */
+        ======================================== */
 
         function cardsPerView() {
 
@@ -242,9 +283,116 @@ if (skillCards.length > 0) {
         }
 
 
-        /* =========================================
-           MAX SLIDER INDEX
-           ========================================= */
+        /* ========================================
+           GET GAP
+        ======================================== */
+
+        function getGap() {
+
+            const styles =
+                window.getComputedStyle(track);
+
+            return (
+                parseFloat(styles.columnGap) ||
+                parseFloat(styles.gap) ||
+                0
+            );
+        }
+
+
+        /* ========================================
+           SET CARD WIDTH
+        ======================================== */
+
+        function updateCardSizes() {
+
+            const visibleCards =
+                cardsPerView();
+
+            const gap =
+                getGap();
+
+
+            /*
+             * Viewport ki actual width
+             * use kar rahe hain.
+             */
+
+            const viewportWidth =
+                viewport.clientWidth;
+
+
+            let cardWidth;
+
+
+            /* ------------------------------------
+               MOBILE
+            ------------------------------------ */
+
+            if (visibleCards === 1) {
+
+                cardWidth =
+                    viewportWidth;
+
+            }
+
+
+            /* ------------------------------------
+               TABLET
+            ------------------------------------ */
+
+            else if (visibleCards === 2) {
+
+                cardWidth =
+                    (viewportWidth - gap) / 2;
+
+            }
+
+
+            /* ------------------------------------
+               DESKTOP
+            ------------------------------------ */
+
+            else {
+
+                cardWidth =
+                    (
+                        viewportWidth -
+                        (gap * 2)
+                    ) / 3;
+
+            }
+
+
+            /*
+             * Har card ko exact pixel width.
+             */
+
+            cards.forEach((card) => {
+
+                card.style.flex =
+                    `0 0 ${cardWidth}px`;
+
+                card.style.width =
+                    `${cardWidth}px`;
+
+                card.style.minWidth =
+                    `${cardWidth}px`;
+
+                card.style.boxSizing =
+                    "border-box";
+
+            });
+
+
+            return cardWidth;
+
+        }
+
+
+        /* ========================================
+           MAX INDEX
+        ======================================== */
 
         function maxIndex() {
 
@@ -252,66 +400,69 @@ if (skillCards.length > 0) {
                 0,
                 cards.length - cardsPerView()
             );
+
         }
 
 
-        /* =========================================
-           CARD WIDTH + GAP
-           ========================================= */
+        /* ========================================
+           GET STEP
+        ======================================== */
 
         function getStep() {
 
             const cardWidth =
                 cards[0].getBoundingClientRect().width;
 
-            const styles =
-                getComputedStyle(track);
-
             const gap =
-                parseFloat(
-                    styles.columnGap || styles.gap
-                ) || 0;
+                getGap();
 
             return cardWidth + gap;
+
         }
 
 
-        /* =========================================
-           RENDER SLIDER
-           ========================================= */
+        /* ========================================
+           RENDER
+        ======================================== */
 
         function render() {
 
-            const max = maxIndex();
+            updateCardSizes();
 
-            // Keep index within limits
+
+            const max =
+                maxIndex();
+
+
+            /*
+             * Index ko valid range mein rakho.
+             */
+
             currentIndex =
                 Math.max(
                     0,
-                    Math.min(currentIndex, max)
+                    Math.min(
+                        currentIndex,
+                        max
+                    )
                 );
 
+
+            const step =
+                getStep();
+
+
             const move =
-                currentIndex * getStep();
+                currentIndex * step;
+
 
             track.style.transform =
                 `translate3d(-${move}px, 0, 0)`;
 
 
-            /* -------------------------------------
-               ARROWS
-               ------------------------------------- */
-
-            prevBtn.disabled = false;
-            nextBtn.disabled = false;
-
-            prevBtn.style.pointerEvents = "auto";
-            nextBtn.style.pointerEvents = "auto";
-
-
-            /* -------------------------------------
+            /* ------------------------------------
                DOTS
-               ------------------------------------- */
+            ------------------------------------ */
 
             if (dotsContainer) {
 
@@ -320,20 +471,24 @@ if (skillCards.length > 0) {
                         ".premium-dot"
                     );
 
-                dots.forEach((dot, index) => {
 
-                    dot.classList.toggle(
-                        "active",
-                        index === currentIndex
-                    );
+                dots.forEach(
+                    (dot, index) => {
 
-                });
+                        dot.classList.toggle(
+                            "active",
+                            index === currentIndex
+                        );
+
+                    }
+                );
+
             }
 
 
-            /* -------------------------------------
+            /* ------------------------------------
                COUNTER
-               ------------------------------------- */
+            ------------------------------------ */
 
             if (counter) {
 
@@ -342,34 +497,59 @@ if (skillCards.length > 0) {
 
             }
 
+
+            /*
+             * Animation lock release
+             */
+
+            setTimeout(() => {
+
+                isAnimating = false;
+
+            }, 400);
+
         }
 
 
-        /* =========================================
-           CREATE DOTS
-           ========================================= */
+        /* ========================================
+           BUILD DOTS
+        ======================================== */
 
         function buildDots() {
 
-            if (!dotsContainer) return;
+            if (!dotsContainer) {
+                return;
+            }
+
 
             dotsContainer.innerHTML = "";
 
-            const max = maxIndex();
 
-            for (let i = 0; i <= max; i++) {
+            const max =
+                maxIndex();
+
+
+            for (
+                let i = 0;
+                i <= max;
+                i++
+            ) {
 
                 const dot =
                     document.createElement("button");
 
-                dot.type = "button";
+
+                dot.type =
+                    "button";
+
 
                 dot.className =
                     "premium-dot";
 
+
                 dot.setAttribute(
                     "aria-label",
-                    `Go to project group ${i + 1}`
+                    `Go to project ${i + 1}`
                 );
 
 
@@ -380,7 +560,15 @@ if (skillCards.length > 0) {
                         event.preventDefault();
                         event.stopPropagation();
 
+
+                        if (isAnimating) {
+                            return;
+                        }
+
+
                         currentIndex = i;
+
+                        isAnimating = true;
 
                         render();
 
@@ -395,9 +583,9 @@ if (skillCards.length > 0) {
         }
 
 
-        /* =========================================
-           PREVIOUS BUTTON
-           ========================================= */
+        /* ========================================
+           PREVIOUS
+        ======================================== */
 
         prevBtn.addEventListener(
             "click",
@@ -406,7 +594,15 @@ if (skillCards.length > 0) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                const max = maxIndex();
+
+                if (isAnimating) {
+                    return;
+                }
+
+
+                const max =
+                    maxIndex();
+
 
                 if (currentIndex > 0) {
 
@@ -414,10 +610,18 @@ if (skillCards.length > 0) {
 
                 } else {
 
-                    // Last slide par loop
-                    currentIndex = max;
+                    /*
+                     * First se previous:
+                     * last position
+                     */
+
+                    currentIndex =
+                        max;
 
                 }
+
+
+                isAnimating = true;
 
                 render();
 
@@ -425,9 +629,9 @@ if (skillCards.length > 0) {
         );
 
 
-        /* =========================================
-           NEXT BUTTON
-           ========================================= */
+        /* ========================================
+           NEXT
+        ======================================== */
 
         nextBtn.addEventListener(
             "click",
@@ -436,7 +640,15 @@ if (skillCards.length > 0) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                const max = maxIndex();
+
+                if (isAnimating) {
+                    return;
+                }
+
+
+                const max =
+                    maxIndex();
+
 
                 if (currentIndex < max) {
 
@@ -444,10 +656,16 @@ if (skillCards.length > 0) {
 
                 } else {
 
-                    // Last slide ke baad first slide
+                    /*
+                     * Last ke baad first
+                     */
+
                     currentIndex = 0;
 
                 }
+
+
+                isAnimating = true;
 
                 render();
 
@@ -455,19 +673,24 @@ if (skillCards.length > 0) {
         );
 
 
-        /* =========================================
-           CARD SELECT / GLASS EFFECT
-           ========================================= */
+        /* ========================================
+           CARD SELECT EFFECT
+        ======================================== */
 
-        cards.forEach(card => {
+        cards.forEach((card) => {
 
             card.addEventListener(
                 "click",
                 function (event) {
 
-                    // Agar Live/GitHub link click hua
-                    // to selected effect mat lagao
-                    if (event.target.closest("a")) {
+                    /*
+                     * Live / GitHub link click
+                     * par selected effect nahi.
+                     */
+
+                    if (
+                        event.target.closest("a")
+                    ) {
                         return;
                     }
 
@@ -478,13 +701,15 @@ if (skillCards.length > 0) {
                         );
 
 
-                    cards.forEach(item => {
+                    cards.forEach(
+                        (item) => {
 
-                        item.classList.remove(
-                            "selected"
-                        );
+                            item.classList.remove(
+                                "selected"
+                            );
 
-                    });
+                        }
+                    );
 
 
                     if (!alreadySelected) {
@@ -499,9 +724,13 @@ if (skillCards.length > 0) {
             );
 
 
-            // Image dragging disable
+            /* ------------------------------------
+               IMAGE DRAG DISABLE
+            ------------------------------------ */
+
             const image =
                 card.querySelector("img");
+
 
             if (image) {
 
@@ -512,9 +741,9 @@ if (skillCards.length > 0) {
         });
 
 
-        /* =========================================
+        /* ========================================
            TOUCH SWIPE
-           ========================================= */
+        ======================================== */
 
         let startX = 0;
         let startY = 0;
@@ -527,8 +756,12 @@ if (skillCards.length > 0) {
                 const touch =
                     event.changedTouches[0];
 
-                startX = touch.clientX;
-                startY = touch.clientY;
+
+                startX =
+                    touch.clientX;
+
+                startY =
+                    touch.clientY;
 
             },
             {
@@ -544,20 +777,30 @@ if (skillCards.length > 0) {
                 const touch =
                     event.changedTouches[0];
 
+
                 const diffX =
                     touch.clientX - startX;
+
 
                 const diffY =
                     touch.clientY - startY;
 
 
-                // Small movement ignore
-                if (Math.abs(diffX) < 50) {
+                /*
+                 * Small movement ignore
+                 */
+
+                if (
+                    Math.abs(diffX) < 50
+                ) {
                     return;
                 }
 
 
-                // Vertical scrolling ignore
+                /*
+                 * Vertical scroll ignore
+                 */
+
                 if (
                     Math.abs(diffX) <
                     Math.abs(diffY)
@@ -568,12 +811,10 @@ if (skillCards.length > 0) {
 
                 if (diffX < 0) {
 
-                    // Swipe left
                     nextBtn.click();
 
                 } else {
 
-                    // Swipe right
                     prevBtn.click();
 
                 }
@@ -585,47 +826,77 @@ if (skillCards.length > 0) {
         );
 
 
-        /* =========================================
-           WINDOW RESIZE
-           ========================================= */
-
-        let resizeTimer;
-
+        /* ========================================
+           RESIZE
+        ======================================== */
 
         window.addEventListener(
             "resize",
             function () {
 
-                clearTimeout(resizeTimer);
+                clearTimeout(
+                    resizeTimer
+                );
+
 
                 resizeTimer =
                     setTimeout(
                         function () {
 
+                            /*
+                             * Resize ke baad
+                             * sizes recalculate.
+                             */
+
+                            updateCardSizes();
+
+
+                            /*
+                             * Current index valid rakho.
+                             */
+
+                            const max =
+                                maxIndex();
+
+
+                            if (
+                                currentIndex > max
+                            ) {
+
+                                currentIndex =
+                                    max;
+
+                            }
+
+
                             buildDots();
+
                             render();
 
                         },
-                        120
+                        150
                     );
 
             }
         );
 
 
-        /* =========================================
+        /* ========================================
            INITIALIZE
-           ========================================= */
+        ======================================== */
+
+        updateCardSizes();
 
         buildDots();
+
         render();
 
     }
 
 
-    /* =========================================
-       DOM READY CHECK
-       ========================================= */
+    /* ============================================
+       DOM READY
+    ============================================ */
 
     if (
         document.readyState === "loading"
@@ -646,7 +917,6 @@ if (skillCards.length > 0) {
     }
 
 })();
-
 
 
 /* =========================================
