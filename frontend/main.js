@@ -5,19 +5,14 @@
 const typedElement = document.querySelector(".text");
 
 if (typedElement && typeof Typed !== "undefined") {
-    new Typed(".text", {
-        strings: [
-            "Frontend Developer",
-            "Web Developer",
-            "MERN Stack Developer"
-        ],
-        typeSpeed: 100,
-        backSpeed: 100,
-        backDelay: 1000,
-        loop: true
-    });
+  new Typed(".text", {
+    strings: ["Frontend Developer", "Web Developer", "MERN Stack Developer"],
+    typeSpeed: 100,
+    backSpeed: 100,
+    backDelay: 1000,
+    loop: true,
+  });
 }
-
 
 /* =========================================
    ABOUT SECTION REVEAL
@@ -28,34 +23,27 @@ const aboutText = document.querySelector(".about-text");
 const aboutSection = document.querySelector(".about");
 
 if (aboutSection && aboutImage && aboutText) {
+  const aboutObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          aboutImage.classList.add("show");
 
-    const aboutObserver = new IntersectionObserver(
-        (entries, observer) => {
+          setTimeout(() => {
+            aboutText.classList.add("show");
+          }, 150);
 
-            entries.forEach((entry) => {
-
-                if (entry.isIntersecting) {
-
-                    aboutImage.classList.add("show");
-
-                    setTimeout(() => {
-                        aboutText.classList.add("show");
-                    }, 150);
-
-                    observer.unobserve(entry.target);
-                }
-
-            });
-
-        },
-        {
-            threshold: 0.2
+          observer.unobserve(entry.target);
         }
-    );
+      });
+    },
+    {
+      threshold: 0.2,
+    },
+  );
 
-    aboutObserver.observe(aboutSection);
+  aboutObserver.observe(aboutSection);
 }
-
 
 /* =========================================
    NAVBAR ACTIVE LINK
@@ -65,1437 +53,872 @@ const sections = document.querySelectorAll("section[id]");
 const navLinks = document.querySelectorAll(".navbar a");
 
 window.addEventListener("scroll", () => {
+  let current = "";
 
-    let current = "";
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop - 150;
+    const sectionHeight = section.offsetHeight;
 
-    sections.forEach((section) => {
+    if (
+      window.scrollY >= sectionTop &&
+      window.scrollY < sectionTop + sectionHeight
+    ) {
+      current = section.getAttribute("id");
+    }
+  });
 
-        const sectionTop = section.offsetTop - 150;
-        const sectionHeight = section.offsetHeight;
+  navLinks.forEach((link) => {
+    link.style.color = "";
 
-        if (
-            window.scrollY >= sectionTop &&
-            window.scrollY < sectionTop + sectionHeight
-        ) {
-            current = section.getAttribute("id");
-        }
-
-    });
-
-    navLinks.forEach((link) => {
-
-        link.style.color = "";
-
-        if (
-            link.getAttribute("href") === `#${current}`
-        ) {
-            link.style.color = "#8d7b68";
-        }
-
-    });
-
+    if (link.getAttribute("href") === `#${current}`) {
+      link.style.color = "#8d7b68";
+    }
+  });
 });
-
 
 /* =========================================
    SMOOTH SCROLL
 ========================================= */
 
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", function (event) {
+    const targetId = this.getAttribute("href");
 
-    link.addEventListener("click", function (event) {
+    if (targetId === "#") {
+      return;
+    }
 
-        const targetId = this.getAttribute("href");
+    const target = document.querySelector(targetId);
 
-        if (targetId === "#") {
-            return;
-        }
+    if (target) {
+      event.preventDefault();
 
-        const target = document.querySelector(targetId);
-
-        if (target) {
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        }
-
-    });
-
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  });
 });
-
 
 /* =========================================
    SKILLS SECTION
 ========================================= */
 
-const skillCards =
-    document.querySelectorAll(".skill-card");
+const skillCards = document.querySelectorAll(".skill-card");
 
 if (skillCards.length > 0) {
+  const skillObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("skill-show");
 
-    const skillObserver =
-        new IntersectionObserver(
-            (entries, observer) => {
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.2,
+    },
+  );
 
-                entries.forEach((entry) => {
+  skillCards.forEach((card, index) => {
+    card.style.transitionDelay = `${index * 100}ms`;
 
-                    if (entry.isIntersecting) {
+    skillObserver.observe(card);
+  });
 
-                        entry.target.classList.add(
-                            "skill-show"
-                        );
+  /* Skill card click effect */
 
-                        observer.unobserve(
-                            entry.target
-                        );
-                    }
+  skillCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      skillCards.forEach((item) => {
+        item.classList.remove("selected");
+      });
 
-                });
-
-            },
-            {
-                threshold: 0.2
-            }
-        );
-
-
-    skillCards.forEach((card, index) => {
-
-        card.style.transitionDelay =
-            `${index * 100}ms`;
-
-        skillObserver.observe(card);
-
+      card.classList.add("selected");
     });
-
-
-    /* Skill card click effect */
-
-    skillCards.forEach((card) => {
-
-        card.addEventListener("click", () => {
-
-            skillCards.forEach((item) => {
-                item.classList.remove("selected");
-            });
-
-            card.classList.add("selected");
-
-        });
-
-    });
-
+  });
 }
-
 
 /* ============================================
    PREMIUM PROJECT SLIDER
 ============================================ */
 
 (function initPremiumProjectSlider() {
+  function init() {
+    const track = document.getElementById("premiumTrack");
 
-    function init() {
+    const viewport = document.querySelector(".premium-viewport");
 
-        const track =
-            document.getElementById("premiumTrack");
+    const prevBtn = document.querySelector(".premium-prev");
 
-        const viewport =
-            document.querySelector(".premium-viewport");
+    const nextBtn = document.querySelector(".premium-next");
 
-        const prevBtn =
-            document.querySelector(".premium-prev");
+    const dotsContainer = document.getElementById("premiumDots");
 
-        const nextBtn =
-            document.querySelector(".premium-next");
+    const counter = document.getElementById("premiumCounter");
 
-        const dotsContainer =
-            document.getElementById("premiumDots");
-
-        const counter =
-            document.getElementById("premiumCounter");
-
-
-        /* ----------------------------------------
+    /* ----------------------------------------
            CHECK ELEMENTS
         ---------------------------------------- */
 
-        if (
-            !track ||
-            !viewport ||
-            !prevBtn ||
-            !nextBtn
-        ) {
-            return;
-        }
+    if (!track || !viewport || !prevBtn || !nextBtn) {
+      return;
+    }
 
+    const cards = Array.from(track.querySelectorAll(".premium-card"));
 
-        const cards =
-            Array.from(
-                track.querySelectorAll(".premium-card")
-            );
+    if (!cards.length) {
+      return;
+    }
 
-
-        if (!cards.length) {
-            return;
-        }
-
-
-        /* ----------------------------------------
+    /* ----------------------------------------
            PREVENT DUPLICATE INITIALIZATION
         ---------------------------------------- */
 
-        if (
-            track.dataset.sliderInitialized === "true"
-        ) {
-            return;
-        }
+    if (track.dataset.sliderInitialized === "true") {
+      return;
+    }
 
-        track.dataset.sliderInitialized = "true";
+    track.dataset.sliderInitialized = "true";
 
+    let currentIndex = 0;
 
-        let currentIndex = 0;
+    let resizeTimer;
 
-        let resizeTimer;
+    let isAnimating = false;
 
-        let isAnimating = false;
-
-
-        /* ========================================
+    /* ========================================
            CARDS PER VIEW
         ======================================== */
 
-        function cardsPerView() {
+    function cardsPerView() {
+      if (window.innerWidth <= 650) {
+        return 1;
+      }
 
-            if (window.innerWidth <= 650) {
-                return 1;
-            }
+      if (window.innerWidth <= 1050) {
+        return 2;
+      }
 
-            if (window.innerWidth <= 1050) {
-                return 2;
-            }
+      return 3;
+    }
 
-            return 3;
-        }
-
-
-        /* ========================================
+    /* ========================================
            GET GAP
         ======================================== */
 
-        function getGap() {
+    function getGap() {
+      const styles = window.getComputedStyle(track);
 
-            const styles =
-                window.getComputedStyle(track);
+      return parseFloat(styles.columnGap) || parseFloat(styles.gap) || 0;
+    }
 
-            return (
-                parseFloat(styles.columnGap) ||
-                parseFloat(styles.gap) ||
-                0
-            );
-        }
-
-
-        /* ========================================
+    /* ========================================
            SET CARD WIDTH
         ======================================== */
 
-        function updateCardSizes() {
+    function updateCardSizes() {
+      const visibleCards = cardsPerView();
 
-            const visibleCards =
-                cardsPerView();
+      const gap = getGap();
 
-            const gap =
-                getGap();
+      const viewportWidth = viewport.clientWidth;
 
-            const viewportWidth =
-                viewport.clientWidth;
+      let cardWidth;
 
-            let cardWidth;
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                MOBILE
             ------------------------------------ */
 
-            if (visibleCards === 1) {
+      if (visibleCards === 1) {
+        cardWidth = viewportWidth;
+      } else if (visibleCards === 2) {
 
-                cardWidth =
-                    viewportWidth;
-
-            }
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                TABLET
             ------------------------------------ */
+        cardWidth = (viewportWidth - gap) / 2;
+      } else {
 
-            else if (visibleCards === 2) {
-
-                cardWidth =
-                    (viewportWidth - gap) / 2;
-
-            }
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                DESKTOP
             ------------------------------------ */
+        cardWidth = (viewportWidth - gap * 2) / 3;
+      }
 
-            else {
+      cards.forEach((card) => {
+        card.style.flex = `0 0 ${cardWidth}px`;
 
-                cardWidth =
-                    (
-                        viewportWidth -
-                        (gap * 2)
-                    ) / 3;
+        card.style.width = `${cardWidth}px`;
 
-            }
+        card.style.minWidth = `${cardWidth}px`;
 
+        card.style.boxSizing = "border-box";
+      });
 
-            cards.forEach((card) => {
+      return cardWidth;
+    }
 
-                card.style.flex =
-                    `0 0 ${cardWidth}px`;
-
-                card.style.width =
-                    `${cardWidth}px`;
-
-                card.style.minWidth =
-                    `${cardWidth}px`;
-
-                card.style.boxSizing =
-                    "border-box";
-
-            });
-
-
-            return cardWidth;
-
-        }
-
-
-        /* ========================================
+    /* ========================================
            MAX INDEX
         ======================================== */
 
-        function maxIndex() {
+    function maxIndex() {
+      return Math.max(0, cards.length - cardsPerView());
+    }
 
-            return Math.max(
-                0,
-                cards.length - cardsPerView()
-            );
-
-        }
-
-
-        /* ========================================
+    /* ========================================
            GET STEP
         ======================================== */
 
-        function getStep() {
+    function getStep() {
+      const cardWidth = cards[0].getBoundingClientRect().width;
 
-            const cardWidth =
-                cards[0].getBoundingClientRect().width;
+      const gap = getGap();
 
-            const gap =
-                getGap();
+      return cardWidth + gap;
+    }
 
-            return cardWidth + gap;
-
-        }
-
-
-        /* ========================================
+    /* ========================================
            RENDER
         ======================================== */
 
-        function render() {
+    function render() {
+      updateCardSizes();
 
-            updateCardSizes();
+      const max = maxIndex();
 
-            const max =
-                maxIndex();
+      currentIndex = Math.max(0, Math.min(currentIndex, max));
 
+      const step = getStep();
 
-            currentIndex =
-                Math.max(
-                    0,
-                    Math.min(
-                        currentIndex,
-                        max
-                    )
-                );
+      const move = currentIndex * step;
 
+      track.style.transform = `translate3d(-${move}px, 0, 0)`;
 
-            const step =
-                getStep();
-
-            const move =
-                currentIndex * step;
-
-
-            track.style.transform =
-                `translate3d(-${move}px, 0, 0)`;
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                DOTS
             ------------------------------------ */
 
-            if (dotsContainer) {
+      if (dotsContainer) {
+        const dots = dotsContainer.querySelectorAll(".premium-dot");
 
-                const dots =
-                    dotsContainer.querySelectorAll(
-                        ".premium-dot"
-                    );
+        dots.forEach((dot, index) => {
+          dot.classList.toggle("active", index === currentIndex);
+        });
+      }
 
-
-                dots.forEach(
-                    (dot, index) => {
-
-                        dot.classList.toggle(
-                            "active",
-                            index === currentIndex
-                        );
-
-                    }
-                );
-
-            }
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                COUNTER
             ------------------------------------ */
 
-            if (counter) {
+      if (counter) {
+        counter.textContent = `${currentIndex + 1} / ${max + 1}`;
+      }
 
-                counter.textContent =
-                    `${currentIndex + 1} / ${max + 1}`;
+      setTimeout(() => {
+        isAnimating = false;
+      }, 400);
+    }
 
-            }
-
-
-            setTimeout(() => {
-
-                isAnimating = false;
-
-            }, 400);
-
-        }
-
-
-        /* ========================================
+    /* ========================================
            BUILD DOTS
         ======================================== */
 
-        function buildDots() {
+    function buildDots() {
+      if (!dotsContainer) {
+        return;
+      }
 
-            if (!dotsContainer) {
-                return;
-            }
+      dotsContainer.innerHTML = "";
 
+      const max = maxIndex();
 
-            dotsContainer.innerHTML = "";
+      for (let i = 0; i <= max; i++) {
+        const dot = document.createElement("button");
 
+        dot.type = "button";
 
-            const max =
-                maxIndex();
+        dot.className = "premium-dot";
 
+        dot.setAttribute("aria-label", `Go to project ${i + 1}`);
 
-            for (
-                let i = 0;
-                i <= max;
-                i++
-            ) {
+        dot.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
 
-                const dot =
-                    document.createElement("button");
+          if (isAnimating) {
+            return;
+          }
 
+          currentIndex = i;
 
-                dot.type =
-                    "button";
+          isAnimating = true;
 
+          render();
+        });
 
-                dot.className =
-                    "premium-dot";
+        dotsContainer.appendChild(dot);
+      }
+    }
 
-
-                dot.setAttribute(
-                    "aria-label",
-                    `Go to project ${i + 1}`
-                );
-
-
-                dot.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.preventDefault();
-                        event.stopPropagation();
-
-
-                        if (isAnimating) {
-                            return;
-                        }
-
-
-                        currentIndex = i;
-
-                        isAnimating = true;
-
-                        render();
-
-                    }
-                );
-
-
-                dotsContainer.appendChild(dot);
-
-            }
-
-        }
-
-
-        /* ========================================
+    /* ========================================
            PREVIOUS
         ======================================== */
 
-        prevBtn.addEventListener(
-            "click",
-            function (event) {
+    prevBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
 
-                event.preventDefault();
-                event.stopPropagation();
+      if (isAnimating) {
+        return;
+      }
 
+      const max = maxIndex();
 
-                if (isAnimating) {
-                    return;
-                }
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = max;
+      }
 
+      isAnimating = true;
 
-                const max =
-                    maxIndex();
+      render();
+    });
 
-
-                if (currentIndex > 0) {
-
-                    currentIndex--;
-
-                } else {
-
-                    currentIndex =
-                        max;
-
-                }
-
-
-                isAnimating = true;
-
-                render();
-
-            }
-        );
-
-
-        /* ========================================
+    /* ========================================
            NEXT
         ======================================== */
 
-        nextBtn.addEventListener(
-            "click",
-            function (event) {
+    nextBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
 
-                event.preventDefault();
-                event.stopPropagation();
+      if (isAnimating) {
+        return;
+      }
 
+      const max = maxIndex();
 
-                if (isAnimating) {
-                    return;
-                }
+      if (currentIndex < max) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
 
+      isAnimating = true;
 
-                const max =
-                    maxIndex();
+      render();
+    });
 
-
-                if (currentIndex < max) {
-
-                    currentIndex++;
-
-                } else {
-
-                    currentIndex = 0;
-
-                }
-
-
-                isAnimating = true;
-
-                render();
-
-            }
-        );
-
-
-        /* ========================================
+    /* ========================================
            CARD SELECT EFFECT
         ======================================== */
 
-        cards.forEach((card) => {
+    cards.forEach((card) => {
+      card.addEventListener("click", function (event) {
+        if (event.target.closest("a")) {
+          return;
+        }
 
-            card.addEventListener(
-                "click",
-                function (event) {
+        const alreadySelected = card.classList.contains("selected");
 
-                    if (
-                        event.target.closest("a")
-                    ) {
-                        return;
-                    }
+        cards.forEach((item) => {
+          item.classList.remove("selected");
+        });
 
+        if (!alreadySelected) {
+          card.classList.add("selected");
+        }
+      });
 
-                    const alreadySelected =
-                        card.classList.contains(
-                            "selected"
-                        );
-
-
-                    cards.forEach(
-                        (item) => {
-
-                            item.classList.remove(
-                                "selected"
-                            );
-
-                        }
-                    );
-
-
-                    if (!alreadySelected) {
-
-                        card.classList.add(
-                            "selected"
-                        );
-
-                    }
-
-                }
-            );
-
-
-            /* ------------------------------------
+      /* ------------------------------------
                IMAGE DRAG DISABLE
             ------------------------------------ */
 
-            const image =
-                card.querySelector("img");
+      const image = card.querySelector("img");
 
+      if (image) {
+        image.draggable = false;
+      }
+    });
 
-            if (image) {
-
-                image.draggable = false;
-
-            }
-
-        });
-
-
-        /* ========================================
+    /* ========================================
            TOUCH SWIPE
         ======================================== */
 
-        let startX = 0;
-        let startY = 0;
+    let startX = 0;
+    let startY = 0;
 
+    track.addEventListener(
+      "touchstart",
+      function (event) {
+        const touch = event.changedTouches[0];
 
-        track.addEventListener(
-            "touchstart",
-            function (event) {
+        startX = touch.clientX;
 
-                const touch =
-                    event.changedTouches[0];
+        startY = touch.clientY;
+      },
+      {
+        passive: true,
+      },
+    );
 
+    track.addEventListener(
+      "touchend",
+      function (event) {
+        const touch = event.changedTouches[0];
 
-                startX =
-                    touch.clientX;
+        const diffX = touch.clientX - startX;
 
-                startY =
-                    touch.clientY;
+        const diffY = touch.clientY - startY;
 
-            },
-            {
-                passive: true
-            }
-        );
+        if (Math.abs(diffX) < 50) {
+          return;
+        }
 
+        if (Math.abs(diffX) < Math.abs(diffY)) {
+          return;
+        }
 
-        track.addEventListener(
-            "touchend",
-            function (event) {
+        if (diffX < 0) {
+          nextBtn.click();
+        } else {
+          prevBtn.click();
+        }
+      },
+      {
+        passive: true,
+      },
+    );
 
-                const touch =
-                    event.changedTouches[0];
-
-
-                const diffX =
-                    touch.clientX - startX;
-
-
-                const diffY =
-                    touch.clientY - startY;
-
-
-                if (
-                    Math.abs(diffX) < 50
-                ) {
-                    return;
-                }
-
-
-                if (
-                    Math.abs(diffX) <
-                    Math.abs(diffY)
-                ) {
-                    return;
-                }
-
-
-                if (diffX < 0) {
-
-                    nextBtn.click();
-
-                } else {
-
-                    prevBtn.click();
-
-                }
-
-            },
-            {
-                passive: true
-            }
-        );
-
-
-        /* ========================================
+    /* ========================================
            RESIZE
         ======================================== */
 
-        window.addEventListener(
-            "resize",
-            function () {
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
 
-                clearTimeout(
-                    resizeTimer
-                );
-
-
-                resizeTimer =
-                    setTimeout(
-                        function () {
-
-                            updateCardSizes();
-
-
-                            const max =
-                                maxIndex();
-
-
-                            if (
-                                currentIndex > max
-                            ) {
-
-                                currentIndex =
-                                    max;
-
-                            }
-
-
-                            buildDots();
-
-                            render();
-
-                        },
-                        150
-                    );
-
-            }
-        );
-
-
-        /* ========================================
-           INITIALIZE
-        ======================================== */
-
+      resizeTimer = setTimeout(function () {
         updateCardSizes();
+
+        const max = maxIndex();
+
+        if (currentIndex > max) {
+          currentIndex = max;
+        }
 
         buildDots();
 
         render();
+      }, 150);
+    });
 
-    }
+    /* ========================================
+           INITIALIZE
+        ======================================== */
 
+    updateCardSizes();
 
-    /* ============================================
+    buildDots();
+
+    render();
+  }
+
+  /* ============================================
        DOM READY
     ============================================ */
 
-    if (
-        document.readyState === "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            init,
-            {
-                once: true
-            }
-        );
-
-    } else {
-
-        init();
-
-    }
-
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, {
+      once: true,
+    });
+  } else {
+    init();
+  }
 })();
-
 
 /* =========================================
    EXPERIENCE ANIMATION
 ========================================= */
 
 (function initExperienceAnimation() {
+  function init() {
+    const experienceItems = document.querySelectorAll(".experience-item");
 
-    function init() {
-
-        const experienceItems =
-            document.querySelectorAll(
-                ".experience-item"
-            );
-
-
-        if (!experienceItems.length) {
-            return;
-        }
-
-
-        const experienceObserver =
-            new IntersectionObserver(
-                function (entries, observer) {
-
-                    entries.forEach(
-                        function (entry) {
-
-                            if (
-                                !entry.isIntersecting
-                            ) {
-                                return;
-                            }
-
-
-                            entry.target.classList.add(
-                                "show"
-                            );
-
-
-                            observer.unobserve(
-                                entry.target
-                            );
-
-                        }
-                    );
-
-                },
-                {
-                    threshold: 0.15
-                }
-            );
-
-
-        experienceItems.forEach(
-            function (item) {
-
-                experienceObserver.observe(item);
-
-            }
-        );
-
+    if (!experienceItems.length) {
+      return;
     }
 
+    const experienceObserver = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) {
+            return;
+          }
 
-    /* -----------------------------------------
+          entry.target.classList.add("show");
+
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.15,
+      },
+    );
+
+    experienceItems.forEach(function (item) {
+      experienceObserver.observe(item);
+    });
+  }
+
+  /* -----------------------------------------
        DOM READY
     ----------------------------------------- */
 
-    if (
-        document.readyState === "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            init,
-            {
-                once: true
-            }
-        );
-
-    } else {
-
-        init();
-
-    }
-
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, {
+      once: true,
+    });
+  } else {
+    init();
+  }
 })();
-
 
 /* =========================================
    CONTACT FORM + RENDER BACKEND
 ========================================= */
 
-const contactForm =
-    document.getElementById("contactForm");
+const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
+  const sendBtn = document.getElementById("sendBtn");
 
-    const sendBtn =
-        document.getElementById("sendBtn");
+  const sendBtnText = document.getElementById("sendBtnText");
 
-    const sendBtnText =
-        document.getElementById("sendBtnText");
+  const sendBtnIcon = document.getElementById("sendBtnIcon");
 
-    const sendBtnIcon =
-        document.getElementById("sendBtnIcon");
+  const formMessage = document.getElementById("formMessage");
 
-    const formMessage =
-        document.getElementById("formMessage");
+  const formMessageIcon = document.getElementById("formMessageIcon");
 
-    const formMessageIcon =
-        document.getElementById("formMessageIcon");
+  const formMessageText = document.getElementById("formMessageText");
 
-    const formMessageText =
-        document.getElementById("formMessageText");
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-
-    contactForm.addEventListener(
-        "submit",
-        async (e) => {
-
-            e.preventDefault();
-
-
-            /* =========================
+    /* =========================
                GET FORM DATA
             ========================= */
 
-            const name =
-                document.getElementById("name")
-                    .value
-                    .trim();
+    const name = document.getElementById("name").value.trim();
 
-            const email =
-                document.getElementById("email")
-                    .value
-                    .trim();
+    const email = document.getElementById("email").value.trim();
 
-            const subject =
-                document.getElementById("subject")
-                    .value
-                    .trim();
+    const subject = document.getElementById("subject").value.trim();
 
-            const message =
-                document.getElementById("message")
-                    .value
-                    .trim();
+    const message = document.getElementById("message").value.trim();
 
-
-            /* =========================
+    /* =========================
                VALIDATION
             ========================= */
 
-            if (
-                !name ||
-                !email ||
-                !subject ||
-                !message
-            ) {
+    if (!name || !email || !subject || !message) {
+      formMessage.classList.add("show", "error");
 
-                formMessage.classList.add(
-                    "show",
-                    "error"
-                );
+      formMessageIcon.className = "fa-solid fa-circle-xmark";
 
-                formMessageIcon.className =
-                    "fa-solid fa-circle-xmark";
+      formMessageText.textContent = "Please fill all fields.";
 
-                formMessageText.textContent =
-                    "Please fill all fields.";
+      return;
+    }
 
-                return;
-            }
-
-
-            /* =========================
+    /* =========================
                LOADING
             ========================= */
 
-            sendBtn.disabled = true;
+    sendBtn.disabled = true;
 
-            sendBtnText.textContent =
-                "Sending...";
+    sendBtnText.textContent = "Sending...";
 
-            sendBtnIcon.className =
-                "fa-solid fa-spinner fa-spin";
+    sendBtnIcon.className = "fa-solid fa-spinner fa-spin";
 
+    formMessage.classList.remove("show", "success", "error");
 
-            formMessage.classList.remove(
-                "show",
-                "success",
-                "error"
-            );
-
-
-            try {
-
-                /* =========================
+    try {
+      /* =========================
                    SEND TO RENDER BACKEND
                 ========================= */
 
-                const response =
-                    await fetch(
-                        "https://aniket-portfolio-o10j.onrender.com/api/contact",
-                        {
-                            method: "POST",
+      const response = await fetch(
+        "https://aniket-portfolio-o10j.onrender.com/api/contact",
+        {
+          method: "POST",
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-                            body: JSON.stringify({
-                                name,
-                                email,
-                                subject,
-                                message
-                            })
-                        }
-                    );
+          body: JSON.stringify({
+            name,
+            email,
+            subject,
+            message,
+          }),
+        },
+      );
 
+      const data = await response.json();
 
-                const data =
-                    await response.json();
-
-
-                /* =========================
+      /* =========================
                    SUCCESS
                 ========================= */
 
-                if (
-                    response.ok &&
-                    data.success
-                ) {
+      if (response.ok && data.success) {
+        formMessage.classList.add("show", "success");
 
-                    formMessage.classList.add(
-                        "show",
-                        "success"
-                    );
+        formMessageIcon.className = "fa-solid fa-circle-check";
 
-                    formMessageIcon.className =
-                        "fa-solid fa-circle-check";
+        formMessageText.textContent = "Message sent successfully!";
 
-                    formMessageText.textContent =
-                        "Message sent successfully!";
+        contactForm.reset();
+      } else {
+        throw new Error(data.message || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Contact Form Error:", error);
 
-                    contactForm.reset();
-
-
-                } else {
-
-                    throw new Error(
-                        data.message ||
-                        "Something went wrong."
-                    );
-
-                }
-
-
-            } catch (error) {
-
-                console.error(
-                    "Contact Form Error:",
-                    error
-                );
-
-
-                /* =========================
+      /* =========================
                    ERROR
                 ========================= */
 
-                formMessage.classList.add(
-                    "show",
-                    "error"
-                );
+      formMessage.classList.add("show", "error");
 
-                formMessageIcon.className =
-                    "fa-solid fa-circle-xmark";
+      formMessageIcon.className = "fa-solid fa-circle-xmark";
 
-                formMessageText.textContent =
-                    error.message ||
-                    "Server error. Please try again.";
+      formMessageText.textContent =
+        error.message || "Server error. Please try again.";
+    }
 
-            }
-
-
-            /* =========================
+    /* =========================
                RESET BUTTON
             ========================= */
 
-            sendBtn.disabled = false;
+    sendBtn.disabled = false;
 
-            sendBtnText.textContent =
-                "Send Message";
+    sendBtnText.textContent = "Send Message";
 
-            sendBtnIcon.className =
-                "fa-solid fa-paper-plane";
-
-        }
-    );
-
+    sendBtnIcon.className = "fa-solid fa-paper-plane";
+  });
 }
-
 
 /* =========================================
    FOOTER
 ========================================= */
 
-const footerYear =
-    document.getElementById("footerYear");
+const footerYear = document.getElementById("footerYear");
 
 if (footerYear) {
-
-    footerYear.textContent =
-        new Date().getFullYear();
-
+  footerYear.textContent = new Date().getFullYear();
 }
-
 
 /* =========================================
    BACK TO TOP
 ========================================= */
 
-const backTop =
-    document.querySelector(".back-top");
+const backTop = document.querySelector(".back-top");
 
 if (backTop) {
+  backTop.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    backTop.addEventListener(
-        "click",
-        (e) => {
-
-            e.preventDefault();
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        }
-    );
-
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
 }
-
 
 /* =========================================
    AI CHAT + RENDER BACKEND
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+  const aiChatButton = document.getElementById("aiChatButton");
 
-    const aiChatButton =
-        document.getElementById("aiChatButton");
+  const aiChatBox = document.getElementById("aiChatBox");
 
-    const aiChatBox =
-        document.getElementById("aiChatBox");
+  const closeChat = document.getElementById("closeChat");
 
-    const closeChat =
-        document.getElementById("closeChat");
+  const chatForm = document.getElementById("chatForm");
 
-    const chatForm =
-        document.getElementById("chatForm");
+  const chatInput = document.getElementById("chatInput");
 
-    const chatInput =
-        document.getElementById("chatInput");
+  const chatMessages = document.getElementById("chatMessages");
 
-    const chatMessages =
-        document.getElementById("chatMessages");
-
-
-    /* -----------------------------------------
+  /* -----------------------------------------
        SAFETY CHECK
     ----------------------------------------- */
 
-    if (
-        !aiChatButton ||
-        !aiChatBox ||
-        !closeChat ||
-        !chatForm ||
-        !chatInput ||
-        !chatMessages
-    ) {
-        return;
-    }
+  if (
+    !aiChatButton ||
+    !aiChatBox ||
+    !closeChat ||
+    !chatForm ||
+    !chatInput ||
+    !chatMessages
+  ) {
+    return;
+  }
 
-
-    /* -----------------------------------------
+  /* -----------------------------------------
        OPEN CHAT
     ----------------------------------------- */
 
-    aiChatButton.addEventListener("click", () => {
+  aiChatButton.addEventListener("click", () => {
+    console.log("AI Chat button clicked");
 
-        console.log("AI Chat button clicked");
+    aiChatBox.classList.add("active");
 
-        aiChatBox.classList.add("active");
+    chatInput.focus();
+  });
 
-        chatInput.focus();
-
-    });
-
-
-    /* -----------------------------------------
+  /* -----------------------------------------
        CLOSE CHAT
     ----------------------------------------- */
 
-    closeChat.addEventListener("click", () => {
+  closeChat.addEventListener("click", () => {
+    aiChatBox.classList.remove("active");
+  });
 
-        aiChatBox.classList.remove("active");
-
-    });
-
-
-    /* -----------------------------------------
+  /* -----------------------------------------
        SEND MESSAGE
     ----------------------------------------- */
 
-    chatForm.addEventListener(
-        "submit",
-        async (e) => {
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-            e.preventDefault();
+    const message = chatInput.value.trim();
 
+    if (!message) {
+      return;
+    }
 
-            const message =
-                chatInput.value.trim();
-
-
-            if (!message) {
-                return;
-            }
-
-
-            /* -----------------------------------
+    /* -----------------------------------
                USER MESSAGE
             ----------------------------------- */
 
-            addMessage(
-                message,
-                "user"
-            );
+    addMessage(message, "user");
 
+    chatInput.value = "";
 
-            chatInput.value = "";
-
-
-            /* -----------------------------------
+    /* -----------------------------------
                TYPING MESSAGE
             ----------------------------------- */
 
-            const typingMessage =
-                addMessage(
-                    "AI is typing...",
-                    "bot"
-                );
+    const typingMessage = addMessage("AI is typing...", "bot");
 
-
-            try {
-
-                /* =============================
+    try {
+      /* =============================
                    SEND TO RENDER BACKEND
                 ============================= */
 
-                const response =
-                    await fetch(
-                        "https://aniket-portfolio-o10j.onrender.com/api/chat",
-                        {
-                            method: "POST",
+      const response = await fetch(
+        "https://aniket-portfolio-o10j.onrender.com/api/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: message,
+          }),
+        },
+      );
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+      const data = await response.json();
 
-                            body: JSON.stringify({
-                                message: message
-                            })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                /* --------------------------------
+      /* --------------------------------
                    REMOVE TYPING
                 -------------------------------- */
 
-                typingMessage.remove();
+      typingMessage.remove();
 
-
-                /* --------------------------------
+      /* --------------------------------
                    CHECK RESPONSE
                 -------------------------------- */
 
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "AI request failed");
+      }
 
-                    throw new Error(
-                        data.message ||
-                        "AI request failed"
-                    );
-
-                }
-
-
-                /* --------------------------------
+      /* --------------------------------
                    AI RESPONSE
                 -------------------------------- */
 
-                addMessage(
-                    data.reply,
-                    "bot"
-                );
+      addMessage(data.reply, "bot");
+    } catch (error) {
+      console.error("FULL CHAT ERROR:", error);
 
+      typingMessage.remove();
 
-            } catch (error) {
+      addMessage("❌ " + error.message, "bot");
+    }
+  });
 
-                console.error(
-                    "FULL CHAT ERROR:",
-                    error
-                );
-
-
-                typingMessage.remove();
-
-
-                addMessage(
-                    "❌ " + error.message,
-                    "bot"
-                );
-
-            }
-
-        }
-    );
-
-
-    /* -----------------------------------------
+  /* -----------------------------------------
        ADD MESSAGE
     ----------------------------------------- */
 
-    function addMessage(
-        text,
-        type
-    ) {
+  function addMessage(text, type) {
+    const messageDiv = document.createElement("div");
 
-        const messageDiv =
-            document.createElement("div");
+    messageDiv.className = `chat-message ${type}`;
 
+    messageDiv.textContent = text;
 
-        messageDiv.className =
-            `chat-message ${type}`;
+    chatMessages.appendChild(messageDiv);
 
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        messageDiv.textContent =
-            text;
-
-
-        chatMessages.appendChild(
-            messageDiv
-        );
-
-
-        chatMessages.scrollTop =
-            chatMessages.scrollHeight;
-
-
-        return messageDiv;
-
-    }
-
+    return messageDiv;
+  }
 });
-
 
 /* =========================================
    PORTFOLIO PRELOADER
 ========================================= */
 
 window.addEventListener("load", () => {
+  const preloader = document.getElementById("preloader");
 
-    const preloader =
-        document.getElementById("preloader");
+  const progress = document.querySelector(".loader-progress");
 
-    const progress =
-        document.querySelector(".loader-progress");
+  const percent = document.querySelector(".loader-percent");
 
-    const percent =
-        document.querySelector(".loader-percent");
+  if (!preloader || !progress || !percent) {
+    return;
+  }
 
+  let value = 0;
 
-    if (!preloader || !progress || !percent) {
-        return;
+  const loading = setInterval(() => {
+    value++;
+
+    progress.style.width = value + "%";
+
+    percent.textContent = value + "%";
+
+    if (value >= 100) {
+      clearInterval(loading);
+
+      setTimeout(() => {
+        preloader.classList.add("hide");
+      }, 500);
     }
-
-
-    let value = 0;
-
-
-    const loading =
-        setInterval(() => {
-
-            value++;
-
-
-            progress.style.width =
-                value + "%";
-
-
-            percent.textContent =
-                value + "%";
-
-
-            if (value >= 100) {
-
-                clearInterval(loading);
-
-
-                setTimeout(() => {
-
-                    preloader.classList.add(
-                        "hide"
-                    );
-
-                }, 500);
-
-            }
-
-        }, 20);
-
+  }, 20);
 });
