@@ -12,14 +12,14 @@ const PORT = process.env.PORT || 5000;
 
 console.log(
     "GEMINI KEY:",
-    process.env.GEMINI_API_KEY ? "LOADED ✅" : "MISSING ❌"
+    process.env.GEMINI_API_KEY ? "LOADED " : "MISSING "
 );
 
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("Portfolio Backend is running 🚀");
+    res.send("Portfolio Backend is running ");
 });
 
 app.use("/api/contact", contactRoutes);

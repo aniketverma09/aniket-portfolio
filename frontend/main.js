@@ -82,7 +82,6 @@ window.addEventListener("scroll", () => {
 
     });
 
-
     navLinks.forEach((link) => {
 
         link.style.color = "";
@@ -193,9 +192,10 @@ if (skillCards.length > 0) {
 
 }
 
+
 /* ============================================
    PREMIUM PROJECT SLIDER
-   ============================================ */
+============================================ */
 
 (function initPremiumProjectSlider() {
 
@@ -312,15 +312,8 @@ if (skillCards.length > 0) {
             const gap =
                 getGap();
 
-
-            /*
-             * Viewport ki actual width
-             * use kar rahe hain.
-             */
-
             const viewportWidth =
                 viewport.clientWidth;
-
 
             let cardWidth;
 
@@ -363,10 +356,6 @@ if (skillCards.length > 0) {
 
             }
 
-
-            /*
-             * Har card ko exact pixel width.
-             */
 
             cards.forEach((card) => {
 
@@ -429,14 +418,9 @@ if (skillCards.length > 0) {
 
             updateCardSizes();
 
-
             const max =
                 maxIndex();
 
-
-            /*
-             * Index ko valid range mein rakho.
-             */
 
             currentIndex =
                 Math.max(
@@ -450,7 +434,6 @@ if (skillCards.length > 0) {
 
             const step =
                 getStep();
-
 
             const move =
                 currentIndex * step;
@@ -497,10 +480,6 @@ if (skillCards.length > 0) {
 
             }
 
-
-            /*
-             * Animation lock release
-             */
 
             setTimeout(() => {
 
@@ -610,11 +589,6 @@ if (skillCards.length > 0) {
 
                 } else {
 
-                    /*
-                     * First se previous:
-                     * last position
-                     */
-
                     currentIndex =
                         max;
 
@@ -656,10 +630,6 @@ if (skillCards.length > 0) {
 
                 } else {
 
-                    /*
-                     * Last ke baad first
-                     */
-
                     currentIndex = 0;
 
                 }
@@ -682,11 +652,6 @@ if (skillCards.length > 0) {
             card.addEventListener(
                 "click",
                 function (event) {
-
-                    /*
-                     * Live / GitHub link click
-                     * par selected effect nahi.
-                     */
 
                     if (
                         event.target.closest("a")
@@ -786,20 +751,12 @@ if (skillCards.length > 0) {
                     touch.clientY - startY;
 
 
-                /*
-                 * Small movement ignore
-                 */
-
                 if (
                     Math.abs(diffX) < 50
                 ) {
                     return;
                 }
 
-
-                /*
-                 * Vertical scroll ignore
-                 */
 
                 if (
                     Math.abs(diffX) <
@@ -843,17 +800,8 @@ if (skillCards.length > 0) {
                     setTimeout(
                         function () {
 
-                            /*
-                             * Resize ke baad
-                             * sizes recalculate.
-                             */
-
                             updateCardSizes();
 
-
-                            /*
-                             * Current index valid rakho.
-                             */
 
                             const max =
                                 maxIndex();
@@ -921,7 +869,7 @@ if (skillCards.length > 0) {
 
 /* =========================================
    EXPERIENCE ANIMATION
-   ========================================= */
+========================================= */
 
 (function initExperienceAnimation() {
 
@@ -937,10 +885,6 @@ if (skillCards.length > 0) {
             return;
         }
 
-
-        /* -------------------------------------
-           INTERSECTION OBSERVER
-           ------------------------------------- */
 
         const experienceObserver =
             new IntersectionObserver(
@@ -975,10 +919,6 @@ if (skillCards.length > 0) {
             );
 
 
-        /* -------------------------------------
-           OBSERVE EACH EXPERIENCE ITEM
-           ------------------------------------- */
-
         experienceItems.forEach(
             function (item) {
 
@@ -992,7 +932,7 @@ if (skillCards.length > 0) {
 
     /* -----------------------------------------
        DOM READY
-       ----------------------------------------- */
+    ----------------------------------------- */
 
     if (
         document.readyState === "loading"
@@ -1014,8 +954,9 @@ if (skillCards.length > 0) {
 
 })();
 
+
 /* =========================================
-   CONTACT FORM + BACKEND
+   CONTACT FORM + RENDER BACKEND
 ========================================= */
 
 const contactForm =
@@ -1123,12 +1064,12 @@ if (contactForm) {
             try {
 
                 /* =========================
-                   SEND TO NODE BACKEND
+                   SEND TO RENDER BACKEND
                 ========================= */
 
                 const response =
                     await fetch(
-                        "http://localhost:5000/api/contact",
+                        "https://aniket-portfolio-o10j.onrender.com/api/contact",
                         {
                             method: "POST",
 
@@ -1269,18 +1210,52 @@ if (backTop) {
 
 }
 
+
+/* =========================================
+   AI CHAT + RENDER BACKEND
+========================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    const aiChatButton = document.getElementById("aiChatButton");
-    const aiChatBox = document.getElementById("aiChatBox");
-    const closeChat = document.getElementById("closeChat");
+    const aiChatButton =
+        document.getElementById("aiChatButton");
 
-    const chatForm = document.getElementById("chatForm");
-    const chatInput = document.getElementById("chatInput");
-    const chatMessages = document.getElementById("chatMessages");
+    const aiChatBox =
+        document.getElementById("aiChatBox");
+
+    const closeChat =
+        document.getElementById("closeChat");
+
+    const chatForm =
+        document.getElementById("chatForm");
+
+    const chatInput =
+        document.getElementById("chatInput");
+
+    const chatMessages =
+        document.getElementById("chatMessages");
 
 
-    // OPEN CHAT
+    /* -----------------------------------------
+       SAFETY CHECK
+    ----------------------------------------- */
+
+    if (
+        !aiChatButton ||
+        !aiChatBox ||
+        !closeChat ||
+        !chatForm ||
+        !chatInput ||
+        !chatMessages
+    ) {
+        return;
+    }
+
+
+    /* -----------------------------------------
+       OPEN CHAT
+    ----------------------------------------- */
+
     aiChatButton.addEventListener("click", () => {
 
         console.log("AI Chat button clicked");
@@ -1288,10 +1263,14 @@ document.addEventListener("DOMContentLoaded", () => {
         aiChatBox.classList.add("active");
 
         chatInput.focus();
+
     });
 
 
-    // CLOSE CHAT
+    /* -----------------------------------------
+       CLOSE CHAT
+    ----------------------------------------- */
+
     closeChat.addEventListener("click", () => {
 
         aiChatBox.classList.remove("active");
@@ -1299,85 +1278,142 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    // SEND MESSAGE
-    chatForm.addEventListener("submit", async (e) => {
+    /* -----------------------------------------
+       SEND MESSAGE
+    ----------------------------------------- */
 
-        e.preventDefault();
+    chatForm.addEventListener(
+        "submit",
+        async (e) => {
 
-        const message = chatInput.value.trim();
-
-        if (!message) return;
-
-
-        // USER MESSAGE
-        addMessage(message, "user");
-
-        chatInput.value = "";
+            e.preventDefault();
 
 
-        // TYPING
-        const typingMessage = addMessage(
-            "AI is typing...",
-            "bot"
-        );
+            const message =
+                chatInput.value.trim();
 
 
-        try {
+            if (!message) {
+                return;
+            }
 
-            const response = await fetch(
-                "http://localhost:5000/api/chat",
-                {
-                    method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+            /* -----------------------------------
+               USER MESSAGE
+            ----------------------------------- */
 
-                    body: JSON.stringify({
-                        message: message
-                    })
-                }
+            addMessage(
+                message,
+                "user"
             );
 
 
-            const data = await response.json();
+            chatInput.value = "";
 
 
-            typingMessage.remove();
+            /* -----------------------------------
+               TYPING MESSAGE
+            ----------------------------------- */
+
+            const typingMessage =
+                addMessage(
+                    "AI is typing...",
+                    "bot"
+                );
 
 
-            if (!response.ok || !data.success) {
+            try {
 
-                throw new Error(
-                    data.message || "AI request failed"
+                /* =============================
+                   SEND TO RENDER BACKEND
+                ============================= */
+
+                const response =
+                    await fetch(
+                        "https://aniket-portfolio-o10j.onrender.com/api/chat",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                message: message
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                /* --------------------------------
+                   REMOVE TYPING
+                -------------------------------- */
+
+                typingMessage.remove();
+
+
+                /* --------------------------------
+                   CHECK RESPONSE
+                -------------------------------- */
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "AI request failed"
+                    );
+
+                }
+
+
+                /* --------------------------------
+                   AI RESPONSE
+                -------------------------------- */
+
+                addMessage(
+                    data.reply,
+                    "bot"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "FULL CHAT ERROR:",
+                    error
+                );
+
+
+                typingMessage.remove();
+
+
+                addMessage(
+                    "❌ " + error.message,
+                    "bot"
                 );
 
             }
 
-
-            addMessage(
-                data.reply,
-                "bot"
-            );
-
-
-       } catch (error) {
-
-    console.error("FULL CHAT ERROR:", error);
-
-    typingMessage.remove();
-
-    addMessage(
-        "❌ " + error.message,
-        "bot"
+        }
     );
-}
-
-    });
 
 
-    // ADD MESSAGE
-    function addMessage(text, type) {
+    /* -----------------------------------------
+       ADD MESSAGE
+    ----------------------------------------- */
+
+    function addMessage(
+        text,
+        type
+    ) {
 
         const messageDiv =
             document.createElement("div");
@@ -1387,7 +1423,8 @@ document.addEventListener("DOMContentLoaded", () => {
             `chat-message ${type}`;
 
 
-        messageDiv.textContent = text;
+        messageDiv.textContent =
+            text;
 
 
         chatMessages.appendChild(
@@ -1400,6 +1437,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         return messageDiv;
+
     }
 
 });
@@ -1411,27 +1449,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("load", () => {
 
-    const preloader = document.getElementById("preloader");
-    const progress = document.querySelector(".loader-progress");
-    const percent = document.querySelector(".loader-percent");
+    const preloader =
+        document.getElementById("preloader");
+
+    const progress =
+        document.querySelector(".loader-progress");
+
+    const percent =
+        document.querySelector(".loader-percent");
+
+
+    if (!preloader || !progress || !percent) {
+        return;
+    }
+
 
     let value = 0;
 
-    const loading = setInterval(() => {
 
-        value++;
+    const loading =
+        setInterval(() => {
 
-        progress.style.width = value + "%";
-        percent.textContent = value + "%";
+            value++;
 
-        if (value >= 100) {
 
-            clearInterval(loading);
+            progress.style.width =
+                value + "%";
 
-            setTimeout(() => {
-                preloader.classList.add("hide");
-            }, 500);
-        }
 
-    }, 20);
+            percent.textContent =
+                value + "%";
+
+
+            if (value >= 100) {
+
+                clearInterval(loading);
+
+
+                setTimeout(() => {
+
+                    preloader.classList.add(
+                        "hide"
+                    );
+
+                }, 500);
+
+            }
+
+        }, 20);
+
 });
